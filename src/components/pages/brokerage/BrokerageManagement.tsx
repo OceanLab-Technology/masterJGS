@@ -1,9 +1,9 @@
 import DashboardLayout from "@/components/layout/DashboardLayout"
 // import Tabs from "../common/components/tabs"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import Segment from "./components/segment"
-import Ticker from "./components/ticker"
-import Client from "./components/client"
+import Segment from "./components/segment/index"
+import Ticker from "./components/Ticker";
+import Client from "./components/Client";
 
 
 export default function BrokerageManagement() {

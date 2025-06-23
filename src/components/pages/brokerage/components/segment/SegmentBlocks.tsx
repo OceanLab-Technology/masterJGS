@@ -200,7 +200,7 @@ function SegmentBlocks({
   const color = segmentColorMap[seg] || { bg: "bg-gray-100", text: "text-gray-600" }
 
   return (
-    
+
     <CardContent className="p-0">
       <div className="rounded-2xl border border-border bg-muted/10 p-6 shadow-sm w-full">
         {/* Header */}
@@ -223,7 +223,7 @@ function SegmentBlocks({
         <div className="grid grid-cols-1 gap-4">
           <div>
             <Label className="text-sm text-foreground">Admin Value</Label>
-            <div className="mt-1 h-10 flex items-center rounded-md border border-border bg-muted px-3 text-muted-foreground">
+            <div className="mt-1 h-10 flex items-center rounded-md border border-border bg-background/20 px-3 text-muted-foreground font-medium">
               {symbol} {adminValue}
             </div>
           </div>
@@ -236,17 +236,18 @@ function SegmentBlocks({
               </span>
               <Input
                 defaultValue={masterValue}
-                className="pl-7 h-10 bg-background border-border rounded-md"
+                className="pl-7 h-10 bg-background border border-border text-foreground rounded-md font-medium"
               />
             </div>
           </div>
 
           <div>
             <Label className="text-sm text-foreground">Total Value</Label>
-            <div className="mt-1 h-10 flex items-center rounded-md border border-border bg-background/20 px-3 text-foreground font-medium">
+            <div className="mt-1 h-10 flex items-center rounded-md border border-border bg-background/20 px-3 text-muted-foreground font-medium">
               {symbol} {adminValue + masterValue}
             </div>
           </div>
+
         </div>
       </div>
     </CardContent>
