@@ -200,6 +200,7 @@ function SegmentBlocks({
   const color = segmentColorMap[seg] || { bg: "bg-gray-100", text: "text-gray-600" }
 
   return (
+    
     <CardContent className="p-0">
       <div className="rounded-2xl border border-border bg-muted/10 p-6 shadow-sm w-full">
         {/* Header */}
