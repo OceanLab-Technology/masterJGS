@@ -2,34 +2,33 @@ import DashboardLayout from "@/components/layout/DashboardLayout"
 // import Tabs from "../common/components/tabs"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Segment from "./components/segment/index"
-import Ticker from "./components/Ticker";
-import Client from "./components/Client";
-
+import Ticker from "./components/Ticker/index";
+import Client from "./components/Client/index";
 
 export default function BrokerageManagement() {
   return (
     <DashboardLayout title="Brokerage Management">
-      <div className="bg-muted/50 min-h-[100vh] flex-1 rounded-xl mt-4 pt-6 px-6 w-full">
-        {/* <Tabs options={["Day", "Hello"]} /> */}
-        <Tabs defaultValue="Segment" className="w-full">
+      {/* This outer wrapper must fill the available height */}
+      <div className="flex flex-col flex-1 min-h-0 bg-muted/50 rounded-xl mt-4 pt-6 px-6">
+        <Tabs defaultValue="Segment" className="flex flex-col flex-1 min-h-0">
           <TabsList>
             <TabsTrigger value="Segment">Segment Wise</TabsTrigger>
             <TabsTrigger value="Ticker">Ticker Wise</TabsTrigger>
             <TabsTrigger value="Client">Client Wise</TabsTrigger>
           </TabsList>
-          <TabsContent value="Segment">
+
+          <TabsContent value="Segment" className="flex-1 min-h-0 overflow-hidden">
             <Segment />
           </TabsContent>
-          <TabsContent value="Ticker">
+          <TabsContent value="Ticker" className="flex-1 min-h-0 overflow-hidden">
             <Ticker />
           </TabsContent>
-          <TabsContent value="Client">
+          <TabsContent value="Client" className="flex-1 min-h-0 overflow-hidden">
             <Client />
           </TabsContent>
-
         </Tabs>
-
       </div>
+
     </DashboardLayout>
-  )
+  );
 }
