@@ -1,7 +1,7 @@
 import DashboardLayout from "@/components/layout/DashboardLayout"
 // import Tabs from "../common/components/tabs"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import Segment from "./components/segment/index"
+import Segment from "./components/Segment/index"
 import Ticker from "./components/Ticker/index";
 import Client from "./components/Client/index";
 
