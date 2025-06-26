@@ -1,6 +1,10 @@
+import ClientBrokerageSettings from "./table"
+
 function Client() {
   return (
-    <div>client</div>
+    <div>
+      <ClientBrokerageSettings/>
+    </div>
   )
 }
 

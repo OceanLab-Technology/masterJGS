@@ -38,6 +38,7 @@ import {
   SelectValue,
   SelectItem,
 } from "@/components/ui/select"
+import { Table, TableBody, TableCell, TableHeader } from "@/components/ui/table"
 
 const schema = z.object({
   id: z.number(),
@@ -210,7 +211,7 @@ export default function EditableTable({ initialData }: EditableTableProps) {
     onRowSelectionChange: setRowSelection,
     onGlobalFilterChange: setGlobalFilter,
     enableRowSelection: true,
-    globalFilterFn: (row, columnId, filterValue) => {
+    globalFilterFn: (row, filterValue) => {
       const search = filterValue.toLowerCase()
       return (
         row.original.scriptName.toLowerCase().includes(search) ||
@@ -244,8 +245,8 @@ export default function EditableTable({ initialData }: EditableTableProps) {
       </div>
 
       <div className="overflow-auto border rounded">
-        <table className="w-full text-sm">
-          <thead>
+        <Table className="w-full text-sm">
+          <TableHeader>
             {table.getHeaderGroups().map(headerGroup => (
               <tr key={headerGroup.id} className="border-b">
                 {headerGroup.headers.map(header => (
@@ -255,19 +256,19 @@ export default function EditableTable({ initialData }: EditableTableProps) {
                 ))}
               </tr>
             ))}
-          </thead>
-          <tbody>
+          </TableHeader>
+          <TableBody>
             {table.getRowModel().rows.map(row => (
               <tr key={row.id} className="border-b">
                 {row.getVisibleCells().map(cell => (
-                  <td key={cell.id} className="p-2">
+                  <TableCell key={cell.id} className="p-2">
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
+                  </TableCell>
                 ))}
               </tr>
             ))}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
 
       <div className="flex items-center justify-between px-2">
