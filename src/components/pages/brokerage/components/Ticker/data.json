@@ -1,0 +1,20 @@
+[
+    {
+        "id": 1,
+        "scriptName": "Reliance",
+        "symbol": "REL",
+        "segment": "BSE",
+        "type": "%",
+        "adminValue": 100,
+        "masterValue": 11100
+    },
+     {
+        "id": 2,
+        "scriptName": "Tcs",
+        "symbol": "TCS",
+        "segment": "NSE",
+        "type": "%",
+        "adminValue": 100,
+        "masterValue": 11100
+    }
+]

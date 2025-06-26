@@ -1,9 +1,9 @@
-import Dashboard from "@/components/pages/dashboard/Dashboard"
-
+import EditableTable from "./data-table"
+import data from "./data.json"
 function Ticker() {
   return (
     <div>
-      <Dashboard />
+      <EditableTable/>
     </div>
   )
 }
