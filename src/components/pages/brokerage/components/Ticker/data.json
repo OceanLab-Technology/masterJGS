@@ -16,5 +16,248 @@
         "type": "%",
         "adminValue": 100,
         "masterValue": 11100
+    },
+     {
+        "id": 3,
+        "scriptName": "Reliance",
+        "symbol": "REL",
+        "segment": "BSE",
+        "type": "%",
+        "adminValue": 100,
+        "masterValue": 11100
+    },
+     {
+        "id": 4,
+        "scriptName": "Tcs",
+        "symbol": "TCS",
+        "segment": "NSE",
+        "type": "%",
+        "adminValue": 100,
+        "masterValue": 11100
+    },
+     {
+        "id": 5,
+        "scriptName": "Reliance",
+        "symbol": "REL",
+        "segment": "BSE",
+        "type": "%",
+        "adminValue": 100,
+        "masterValue": 11100
+    },
+     {
+        "id": 6,
+        "scriptName": "Tcs",
+        "symbol": "TCS",
+        "segment": "NSE",
+        "type": "%",
+        "adminValue": 100,
+        "masterValue": 11100
+    },
+     {
+        "id": 7,
+        "scriptName": "Reliance",
+        "symbol": "REL",
+        "segment": "BSE",
+        "type": "%",
+        "adminValue": 100,
+        "masterValue": 11100
+    },
+     {
+        "id": 8,
+        "scriptName": "Tcs",
+        "symbol": "TCS",
+        "segment": "NSE",
+        "type": "%",
+        "adminValue": 100,
+        "masterValue": 11100
+    },
+     {
+        "id": 9,
+        "scriptName": "Reliance",
+        "symbol": "REL",
+        "segment": "BSE",
+        "type": "%",
+        "adminValue": 100,
+        "masterValue": 11100
+    },
+     {
+        "id": 10,
+        "scriptName": "Tcs",
+        "symbol": "TCS",
+        "segment": "NSE",
+        "type": "%",
+        "adminValue": 100,
+        "masterValue": 11100
+    }, {
+        "id": 11,
+        "scriptName": "Reliance",
+        "symbol": "REL",
+        "segment": "BSE",
+        "type": "%",
+        "adminValue": 100,
+        "masterValue": 11100
+    },
+     {
+        "id":12,
+        "scriptName": "Tcs",
+        "symbol": "TCS",
+        "segment": "NSE",
+        "type": "%",
+        "adminValue": 100,
+        "masterValue": 11100
+    },
+     {
+        "id": 13,
+        "scriptName": "Reliance",
+        "symbol": "REL",
+        "segment": "BSE",
+        "type": "%",
+        "adminValue": 100,
+        "masterValue": 11100
+    },
+     {
+        "id": 14,
+        "scriptName": "Tcs",
+        "symbol": "TCS",
+        "segment": "NSE",
+        "type": "%",
+        "adminValue": 100,
+        "masterValue": 11100
+    }, {
+        "id": 15,
+        "scriptName": "Reliance",
+        "symbol": "REL",
+        "segment": "BSE",
+        "type": "%",
+        "adminValue": 100,
+        "masterValue": 11100
+    },
+     {
+        "id": 16,
+        "scriptName": "Tcs",
+        "symbol": "TCS",
+        "segment": "NSE",
+        "type": "%",
+        "adminValue": 100,
+        "masterValue": 11100
+    }, {
+        "id": 17,
+        "scriptName": "Reliance",
+        "symbol": "REL",
+        "segment": "BSE",
+        "type": "%",
+        "adminValue": 100,
+        "masterValue": 11100
+    },
+     {
+        "id": 18,
+        "scriptName": "Tcs",
+        "symbol": "TCS",
+        "segment": "NSE",
+        "type": "%",
+        "adminValue": 100,
+        "masterValue": 11100
+    },{
+        "id": 19,
+        "scriptName": "Reliance",
+        "symbol": "REL",
+        "segment": "BSE",
+        "type": "%",
+        "adminValue": 100,
+        "masterValue": 11100
+    },
+     {
+        "id": 20,
+        "scriptName": "Tcs",
+        "symbol": "TCS",
+        "segment": "NSE",
+        "type": "%",
+        "adminValue": 100,
+        "masterValue": 11100
+    },{
+        "id": 21,
+        "scriptName": "Reliance",
+        "symbol": "REL",
+        "segment": "BSE",
+        "type": "%",
+        "adminValue": 100,
+        "masterValue": 11100
+    },
+     {
+        "id": 22,
+        "scriptName": "Tcs",
+        "symbol": "TCS",
+        "segment": "NSE",
+        "type": "%",
+        "adminValue": 100,
+        "masterValue": 11100
+    },{
+        "id": 23,
+        "scriptName": "Reliance",
+        "symbol": "REL",
+        "segment": "BSE",
+        "type": "%",
+        "adminValue": 100,
+        "masterValue": 11100
+    },
+     {
+        "id": 24,
+        "scriptName": "Tcs",
+        "symbol": "TCS",
+        "segment": "NSE",
+        "type": "%",
+        "adminValue": 100,
+        "masterValue": 11100
+    },{
+        "id": 25,
+        "scriptName": "Reliance",
+        "symbol": "REL",
+        "segment": "BSE",
+        "type": "%",
+        "adminValue": 100,
+        "masterValue": 11100
+    },
+     {
+        "id": 26,
+        "scriptName": "Tcs",
+        "symbol": "TCS",
+        "segment": "NSE",
+        "type": "%",
+        "adminValue": 100,
+        "masterValue": 11100
+    },{
+        "id": 27,
+        "scriptName": "Reliance",
+        "symbol": "REL",
+        "segment": "BSE",
+        "type": "%",
+        "adminValue": 100,
+        "masterValue": 11100
+    },
+     {
+        "id": 28,
+        "scriptName": "Tcs",
+        "symbol": "TCS",
+        "segment": "NSE",
+        "type": "%",
+        "adminValue": 100,
+        "masterValue": 11100
+    },{
+        "id": 29,
+        "scriptName": "Reliance",
+        "symbol": "REL",
+        "segment": "BSE",
+        "type": "%",
+        "adminValue": 100,
+        "masterValue": 11100
+    },
+     {
+        "id": 30,
+        "scriptName": "Tcs",
+        "symbol": "TCS",
+        "segment": "NSE",
+        "type": "%",
+        "adminValue": 100,
+        "masterValue": 11100
     }
 ]

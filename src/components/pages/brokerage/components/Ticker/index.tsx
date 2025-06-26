@@ -1,9 +1,9 @@
-import EditableTable from "./data-table"
 import data from "./data.json"
+import EditableTable from "./data-table"
 function Ticker() {
   return (
     <div>
-      <EditableTable/>
+      <EditableTable initialData={data} />
     </div>
   )
 }

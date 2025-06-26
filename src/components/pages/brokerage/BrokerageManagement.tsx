@@ -20,7 +20,7 @@ export default function BrokerageManagement() {
           <TabsContent value="Segment" className="flex-1 min-h-0 overflow-hidden">
             <Segment />
           </TabsContent>
-          <TabsContent value="Ticker" className="flex-1 min-h-0 overflow-hidden">
+          <TabsContent value="Ticker" className="flex-1 min-h-0 overflow-auto">
             <Ticker />
           </TabsContent>
           <TabsContent value="Client" className="flex-1 min-h-0 overflow-hidden">
