@@ -1,6 +1,6 @@
 import data from "./data.json"
 import EditableTable from "./data-table"
-function Ticker() {
+function Script() {
   return (
     <div>
       <EditableTable initialData={data} />
@@ -8,4 +8,4 @@ function Ticker() {
   )
 }
 
-export default Ticker
+export default Script
