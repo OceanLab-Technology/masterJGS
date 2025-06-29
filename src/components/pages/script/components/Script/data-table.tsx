@@ -19,6 +19,8 @@ import {
   IconChevronLeft,
   IconChevronRight,
   IconChevronsRight,
+  IconBan,
+  IconCheck,
 } from "@tabler/icons-react"
 import {
   Dialog,
@@ -43,12 +45,14 @@ import { Badge } from "@/components/ui/badge"
 
 const schema = z.object({
   id: z.number(),
-  scriptName: z.string(),
-  symbol: z.string(),
+  name: z.string(),
   segment: z.string(),
-  type: z.enum(["%", "₹"]),
-  adminValue: z.number(),
-  masterValue: z.number(),
+  minLot: z.number(),
+  maxLot: z.number(),
+  maxQty: z.number(),
+  qtyPerLot: z.number(),
+  adminStatus: z.enum(["Active", "Blocked"]),
+  masterStatus: z.enum(["Active", "Blocked"]),
 })
 
 type DataType = z.infer<typeof schema>
@@ -65,49 +69,47 @@ export default function EditableTable({ initialData }: EditableTableProps) {
   const [globalFilter, setGlobalFilter] = useState("")
 
   const [form, setForm] = useState<Omit<DataType, "id">>({
-    scriptName: "",
-    symbol: "",
+    name: "",
     segment: "",
-    type: "%",
-    adminValue: 0,
-    masterValue: 0,
+    minLot: 0,
+    maxLot: 0,
+    maxQty: 0,
+    qtyPerLot: 0,
+    adminStatus: "Active",
+    masterStatus: "Active",
   })
 
-  const openAddModal = () => {
-    setEditRow(null)
-    setForm({
-      scriptName: "",
-      symbol: "",
-      segment: "",
-      type: "%",
-      adminValue: 0,
-      masterValue: 0,
-    })
-    setIsModalOpen(true)
-  }
 
   const openEditModal = (row: DataType) => {
     setEditRow(row)
-    setForm({
-      scriptName: row.scriptName,
-      symbol: row.symbol,
-      segment: row.segment,
-      type: row.type,
-      adminValue: row.adminValue,
-      masterValue: row.masterValue,
-    })
+    setForm({ ...row })
     setIsModalOpen(true)
   }
 
-  const handleDelete = (id: number) => {
-    setData(prev => prev.filter(row => row.id !== id))
-  }
-
-  const handleBulkDelete = () => {
-    const idsToDelete = table.getSelectedRowModel().rows.map(r => r.original.id)
-    setData(prev => prev.filter(row => !idsToDelete.includes(row.id)))
+  const handleBulkBlock = () => {
+    const idsToBlock = table.getSelectedRowModel().rows.map(r => r.original.id)
+    setData(prev =>
+      prev.map(row =>
+        idsToBlock.includes(row.id)
+          ? { ...row, masterStatus: "Blocked" }
+          : row
+      )
+    )
     setRowSelection({})
   }
+
+  const handleBulkEnable = () => {
+    const idsToBlock = table.getSelectedRowModel().rows.map(r => r.original.id)
+    setData(prev =>
+      prev.map(row =>
+        idsToBlock.includes(row.id)
+          ? { ...row, masterStatus: "Active" }
+          : row
+      )
+    )
+    setRowSelection({})
+  }
+
 
   const handleSave = () => {
     if (editRow) {
@@ -143,83 +145,116 @@ export default function EditableTable({ initialData }: EditableTableProps) {
       ),
     },
     {
-      accessorKey: "scriptName",
+      accessorKey: "name",
       header: "Name",
-      cell: ({ row }) => row.original.scriptName,
-    },
-    {
-      accessorKey: "symbol",
-      header: "Symbol",
-      cell: ({ row }) => row.original.symbol,
+      cell: ({ row }) => row.original.name,
     },
     {
       accessorKey: "segment",
       header: "Segment",
-      cell: ({ row }) => (
-        <div className="flex flex-col gap-1">
-          {getApplicationBadge(row.original)}
-        </div>
-      ),
+      cell: ({ row }) => getApplicationBadge(row.original.segment),
     },
+    {
+      accessorKey: "minLot",
+      header: "Min Lot",
+    },
+    {
+      accessorKey: "maxLot",
+      header: "Max Lot",
+    },
+    {
+      accessorKey: "maxQty",
+      header: "Max Qty",
+    },
+    {
+      accessorKey: "qtyPerLot",
+      header: "Qty/Lot",
+    },
+    {
+      accessorKey: "adminStatus",
+      header: "Admin Status",
+      cell: ({ row }) => getStatusBadge(row.original.adminStatus),
+    },
+    {
+      accessorKey: "masterStatus",
+      header: "Master Status",
+      cell: ({ row }) => getStatusBadge(row.original.masterStatus),
+    },
+    {
+  id: "actions",
+  header: "Actions",
+  cell: ({ row }) => {
+    const { id, masterStatus } = row.original;
 
-    {
-      accessorKey: "adminValue",
-      header: "Admin Value",
-      cell: ({ row }) => {
-        const { adminValue, type } = row.original
-        return `${adminValue.toFixed(2)} ${type === "%" ? "%" : "₹"}`
-      },
-    },
-    {
-      accessorKey: "masterValue",
-      header: "Master Value",
-      cell: ({ row }) => {
-        const { masterValue, type } = row.original
-        return `${masterValue.toFixed(2)} ${type === "%" ? "%" : "₹"}`
-      },
-    },
-    {
-      id: "total",
-      header: "Total",
-      cell: ({ row }) => {
-        const { adminValue, masterValue, type } = row.original
-        const total = adminValue + masterValue
-        return `${total.toFixed(2)} ${type === "%" ? "%" : "₹"}`
-      },
-    },
+    return (
+      <div className="flex gap-2">
+        {/* Edit Button */}
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => openEditModal(row.original)}
+        >
+          <IconEdit className="w-4 h-4" />
+        </Button>
 
-    // {
-    //   id: "actions",
-    //   header: "Actions",
-    //   cell: ({ row }) => (
-    //     <div className="flex gap-2">
-    //       <Button size="icon" variant="ghost" onClick={() => openEditModal(row.original)}>
-    //         <IconEdit size={16} />
-    //       </Button>
-    //       <Button
-    //         size="icon"
-    //         variant="destructive"
-    //         onClick={() => handleDelete(row.original.id)}
-    //       >
-    //         <IconTrash size={16} />
-    //       </Button>
-    //     </div>
-    //   ),
-    // },
-    {
-      id: "actions",
-      header: "Actions",
-      cell: ({ row }) => (
-        <div className="flex gap-2">
-          <Button variant="outline" size="sm" onClick={() => openEditModal(row.original)}>
-            <IconEdit className="w-4 h-4" />
+        {/* Toggle Block/Enable */}
+        {masterStatus === "Blocked" ? (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              setData(prev =>
+                prev.map(r =>
+                  r.id === id ? { ...r, masterStatus: "Active" } : r
+                )
+              )
+            }
+          >
+            <IconCheck className="w-4 h-4 text-green-600" />
           </Button>
-          <Button variant="outline" size="sm" onClick={() => handleDelete(row.original.id)}>
-            <IconTrash className="w-4 h-4" />
+        ) : (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() =>
+              setData(prev =>
+                prev.map(r =>
+                  r.id === id ? { ...r, masterStatus: "Blocked" } : r
+                )
+              )
+            }
+          >
+            <IconBan className="w-4 h-4 text-red-600" />
           </Button>
-        </div>
-      ),
-    }
+        )}
+
+        {/* Reset Button */}
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() =>
+            setData(prev =>
+              prev.map(r =>
+                r.id === id
+                  ? {
+                      ...r,
+                      minLot: 0,
+                      maxLot: 0,
+                      maxQty: 0,
+                      qtyPerLot: 0,
+                      masterStatus: "Active",
+                    }
+                  : r
+              )
+            )
+          }
+        >
+          Reset
+        </Button>
+      </div>
+    );
+  },
+}
 
   ]
 
@@ -240,8 +275,7 @@ export default function EditableTable({ initialData }: EditableTableProps) {
     globalFilterFn: (row, filterValue) => {
       const search = filterValue.toLowerCase()
       return (
-        row.original.scriptName.toLowerCase().includes(search) ||
-        row.original.symbol.toLowerCase().includes(search) ||
+        row.original.name.toLowerCase().includes(search) ||
         row.original.segment.toLowerCase().includes(search)
       )
     },
@@ -257,26 +291,32 @@ export default function EditableTable({ initialData }: EditableTableProps) {
             onChange={(e) => setGlobalFilter(e.target.value)}
             className="w-52"
           />
-          <Button onClick={openAddModal}>
-            <IconCirclePlus className="mr-2" /> Add New
+        </div>
+        <div className="flex gap-2 items-center">
+          <Button
+            variant="destructive"
+            onClick={handleBulkBlock}
+            disabled={table.getSelectedRowModel().rows.length === 0}
+          >
+            <IconTrash className="mr-2" /> Block Selected
+          </Button>
+          <Button
+            variant="default"
+            onClick={handleBulkEnable}
+            disabled={table.getSelectedRowModel().rows.length === 0}
+          >
+            <IconCirclePlus className="mr-2" /> Enable Selected
           </Button>
         </div>
-        <Button
-          variant="destructive"
-          onClick={handleBulkDelete}
-          disabled={table.getSelectedRowModel().rows.length === 0}
-        >
-          <IconTrash className="mr-2" /> Delete Selected
-        </Button>
       </div>
 
       <div className="overflow-auto border rounded-lg">
         <Table className="w-full text-sm">
           <TableHeader>
             {table.getHeaderGroups().map(headerGroup => (
-              <TableRow key={headerGroup.id} className="border-b">
+              <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map(header => (
-                  <TableHead key={header.id} className="text-left p-2">
+                  <TableHead key={header.id}>
                     {flexRender(header.column.columnDef.header, header.getContext())}
                   </TableHead>
                 ))}
@@ -285,9 +325,9 @@ export default function EditableTable({ initialData }: EditableTableProps) {
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows.map(row => (
-              <TableRow key={row.id} className="border-b">
+              <TableRow key={row.id}>
                 {row.getVisibleCells().map(cell => (
-                  <TableCell key={cell.id} className="p-2">
+                  <TableCell key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
@@ -297,15 +337,13 @@ export default function EditableTable({ initialData }: EditableTableProps) {
         </Table>
       </div>
 
-      <div className="flex items-center justify-between px-2">
-        <div className="text-sm text-muted-foreground hidden flex-1 lg:flex">
-          {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s) selected.
+      <div className="flex justify-between items-center px-2">
+        <div className="text-sm text-muted-foreground hidden lg:flex">
+          {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} selected.
         </div>
         <div className="flex w-full items-center gap-6 lg:w-fit">
           <div className="hidden lg:flex items-center gap-2">
-            <Label htmlFor="rows-per-page" className="text-sm font-medium">
-              Rows per page
-            </Label>
+            <Label htmlFor="rows-per-page" className="text-sm">Rows per page</Label>
             <Select
               value={`${table.getState().pagination.pageSize}`}
               onValueChange={value => table.setPageSize(Number(value))}
@@ -315,9 +353,7 @@ export default function EditableTable({ initialData }: EditableTableProps) {
               </SelectTrigger>
               <SelectContent>
                 {[10, 20, 30, 40, 50].map(size => (
-                  <SelectItem key={size} value={`${size}`}>
-                    {size}
-                  </SelectItem>
+                  <SelectItem key={size} value={`${size}`}>{size}</SelectItem>
                 ))}
               </SelectContent>
             </Select>
@@ -345,45 +381,19 @@ export default function EditableTable({ initialData }: EditableTableProps) {
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>{editRow ? "Edit Entry" : "Add Entry"}</DialogTitle>
+            <DialogTitle>{editRow ? "Edit Script" : "Add Script"}</DialogTitle>
           </DialogHeader>
           <div className="grid gap-3 py-4">
-            {(["scriptName", "symbol", "segment"] as const).map(key => (
+            {["minLot", "maxLot", "maxQty", "qtyPerLot"].map(key => (
               <div key={key}>
                 <Label>{key}</Label>
                 <Input
-                  value={form[key]}
-                  onChange={e => setForm({ ...form, [key]: e.target.value })}
+                  type="number"
+                  value={form[key as keyof typeof form]}
+                  onChange={e => setForm({ ...form, [key]: Number(e.target.value) })}
                 />
               </div>
             ))}
-            <div>
-              <Label>Type</Label>
-              <select
-                className="border rounded p-2 w-full"
-                value={form.type}
-                onChange={e => setForm({ ...form, type: e.target.value as "%" | "₹" })}
-              >
-                <option value="%">%</option>
-                <option value="₹">₹</option>
-              </select>
-            </div>
-            <div>
-              <Label>Admin Value</Label>
-              <Input
-                type="number"
-                value={form.adminValue}
-                onChange={e => setForm({ ...form, adminValue: Number(e.target.value) })}
-              />
-            </div>
-            <div>
-              <Label>Master Value</Label>
-              <Input
-                type="number"
-                value={form.masterValue}
-                onChange={e => setForm({ ...form, masterValue: Number(e.target.value) })}
-              />
-            </div>
           </div>
           <DialogFooter>
             <Button variant="outline" onClick={() => setIsModalOpen(false)}>Cancel</Button>
@@ -394,18 +404,25 @@ export default function EditableTable({ initialData }: EditableTableProps) {
     </div>
   )
 }
-const getApplicationBadge = (s: DataType) => {
+
+const getApplicationBadge = (segment: string) => {
   const base = "text-white text-xs"
-  switch (s.segment) {
+  switch (segment) {
     case "BSE":
-      return <Badge className={`bg-red-600 ${base}`}>{s.segment}</Badge>
+      return <Badge className={`bg-red-600 ${base}`}>{segment}</Badge>
     case "NSE":
-      return <Badge className={`bg-orange-600 ${base}`}>{s.segment}</Badge>
+      return <Badge className={`bg-orange-600 ${base}`}>{segment}</Badge>
     case "MCX":
-      return <Badge className={`bg-green-600 ${base}`}>{s.segment}</Badge>
+      return <Badge className={`bg-green-600 ${base}`}>{segment}</Badge>
     default:
-      return null
+      return <Badge className={`bg-gray-500 ${base}`}>{segment}</Badge>
   }
 }
 
-
+const getStatusBadge = (status: "Active" | "Blocked") => {
+  return (
+    <Badge className={`text-white text-xs ${status === "Active" ? "bg-green-600" : "bg-red-600"}`}>
+      {status}
+    </Badge>
+  )
+}

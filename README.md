@@ -2,5 +2,8 @@
 - [ ] Brokerage Management
   - [x] Segment Wise
   - [x] Ticker Wise
-  - [ ] Client Wise
+  - [x] Client Wise
   - [ ] View
+- [ ] script management
+  - [] Client
+  - [] Script
