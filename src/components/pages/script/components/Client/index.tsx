@@ -7,6 +7,7 @@ const clientInfo = {
   clientId: "ABCD11",
 }
 
+
 const availableSegments = [
   { name: "BSE", enabled: true },
   { name: "NSE", enabled: true },
