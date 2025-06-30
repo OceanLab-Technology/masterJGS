@@ -181,80 +181,80 @@ export default function EditableTable({ initialData }: EditableTableProps) {
       cell: ({ row }) => getStatusBadge(row.original.masterStatus),
     },
     {
-  id: "actions",
-  header: "Actions",
-  cell: ({ row }) => {
-    const { id, masterStatus } = row.original;
+      id: "actions",
+      header: "Actions",
+      cell: ({ row }) => {
+        const { id, masterStatus } = row.original;
 
-    return (
-      <div className="flex gap-2">
-        {/* Edit Button */}
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => openEditModal(row.original)}
-        >
-          <IconEdit className="w-4 h-4" />
-        </Button>
+        return (
+          <div className="flex gap-2">
+            {/* Edit Button */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => openEditModal(row.original)}
+            >
+              <IconEdit className="w-4 h-4" />
+            </Button>
 
-        {/* Toggle Block/Enable */}
-        {masterStatus === "Blocked" ? (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() =>
-              setData(prev =>
-                prev.map(r =>
-                  r.id === id ? { ...r, masterStatus: "Active" } : r
+            {/* Toggle Block/Enable */}
+            {masterStatus === "Blocked" ? (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  setData(prev =>
+                    prev.map(r =>
+                      r.id === id ? { ...r, masterStatus: "Active" } : r
+                    )
+                  )
+                }
+              >
+                <IconCheck className="w-4 h-4 text-green-600" />
+              </Button>
+            ) : (
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() =>
+                  setData(prev =>
+                    prev.map(r =>
+                      r.id === id ? { ...r, masterStatus: "Blocked" } : r
+                    )
+                  )
+                }
+              >
+                <IconBan className="w-4 h-4 text-red-600" />
+              </Button>
+            )}
+
+            {/* Reset Button */}
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                setData(prev =>
+                  prev.map(r =>
+                    r.id === id
+                      ? {
+                        ...r,
+                        minLot: 0,
+                        maxLot: 0,
+                        maxQty: 0,
+                        qtyPerLot: 0,
+                        masterStatus: "Active",
+                      }
+                      : r
+                  )
                 )
-              )
-            }
-          >
-            <IconCheck className="w-4 h-4 text-green-600" />
-          </Button>
-        ) : (
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() =>
-              setData(prev =>
-                prev.map(r =>
-                  r.id === id ? { ...r, masterStatus: "Blocked" } : r
-                )
-              )
-            }
-          >
-            <IconBan className="w-4 h-4 text-red-600" />
-          </Button>
-        )}
-
-        {/* Reset Button */}
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() =>
-            setData(prev =>
-              prev.map(r =>
-                r.id === id
-                  ? {
-                      ...r,
-                      minLot: 0,
-                      maxLot: 0,
-                      maxQty: 0,
-                      qtyPerLot: 0,
-                      masterStatus: "Active",
-                    }
-                  : r
-              )
-            )
-          }
-        >
-          Reset
-        </Button>
-      </div>
-    );
-  },
-}
+              }
+            >
+              Reset
+            </Button>
+          </div>
+        );
+      },
+    }
 
   ]
 
