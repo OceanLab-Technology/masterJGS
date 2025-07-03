@@ -1,29 +1,32 @@
-import { useEffect, useState } from "react"
-import { Button } from "@/components/ui/button"
-import SegmentBlocks from "./SegmentBlocks"
-import { useSegmentStore } from "@/store/useSegmentStore"
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+import SegmentBlocks from "@/components/pages/brokerage/components/segment/SegmentBlocks";
+import { useSegmentStore } from "@/store/useSegmentStore";
 
 export default function Segment() {
-  const { segments, fetchSegments, updateSegmentLocally, updateSegmentsBatch } = useSegmentStore()
-  const [dirtySegments, setDirtySegments] = useState<Record<number, number>>({}) // { id: newMasterValue }
+  const { segments, fetchSegments, updateSegmentLocally, updateSegmentsBatch } =
+    useSegmentStore();
+  const [dirtySegments, setDirtySegments] = useState<Record<number, number>>(
+    {}
+  ); // { id: newMasterValue }
 
   useEffect(() => {
-    fetchSegments()
-  }, [fetchSegments])
+    fetchSegments();
+  }, [fetchSegments]);
 
   const handleUpdateMasterValue = (id: number, value: number) => {
-    updateSegmentLocally(id, { master_value: value })
-    setDirtySegments((prev) => ({ ...prev, [id]: value }))
-  }
+    updateSegmentLocally(id, { master_value: value });
+    setDirtySegments((prev) => ({ ...prev, [id]: value }));
+  };
 
   const handleSave = async () => {
     const payload = Object.entries(dirtySegments).map(([id, master_value]) => ({
       id: parseInt(id),
       master_value,
-    }))
-    await updateSegmentsBatch(payload)
-    setDirtySegments({})
-  }
+    }));
+    await updateSegmentsBatch(payload);
+    setDirtySegments({});
+  };
 
   return (
     <div className="flex flex-col h-full max-h-full">
@@ -31,7 +34,8 @@ export default function Segment() {
       <div className="sticky top-0 z-10 bg-card border-b px-4 py-2">
         <h2 className="text-lg font-semibold">Segment Overview</h2>
         <p className="text-sm text-muted-foreground">
-          Summary of each segment — Admin values are fixed and visually distinct.
+          Summary of each segment — Admin values are fixed and visually
+          distinct.
         </p>
       </div>
 
@@ -42,7 +46,9 @@ export default function Segment() {
             <SegmentBlocks
               key={seg.id}
               {...seg}
-              onUpdateMasterValue={(val) => handleUpdateMasterValue(seg.id, val)}
+              onUpdateMasterValue={(val) =>
+                handleUpdateMasterValue(seg.id, val)
+              }
             />
           ))
         ) : (
@@ -63,5 +69,5 @@ export default function Segment() {
         </div>
       </div>
     </div>
-  )
+  );
 }
