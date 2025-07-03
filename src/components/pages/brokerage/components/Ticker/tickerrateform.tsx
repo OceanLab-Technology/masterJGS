@@ -90,7 +90,7 @@ export const TickerRateForm: React.FC<ScriptRateFormProps> = ({
           name="scriptName"
           render={({ field }) => (
             <FormItem className="space-y-2">
-              <FormLabel className="text-sm font-medium text-gray-700">
+              <FormLabel className="text-sm font-medium ">
                 Script Name
               </FormLabel>
               <FormControl>
@@ -109,9 +109,7 @@ export const TickerRateForm: React.FC<ScriptRateFormProps> = ({
           name="symbol"
           render={({ field }) => (
             <FormItem className="space-y-2">
-              <FormLabel className="text-sm font-medium text-gray-700">
-                Symbol
-              </FormLabel>
+              <FormLabel className="text-sm font-medium ">Symbol</FormLabel>
               <FormControl>
                 <Input placeholder="e.g. RELIANCE, NIFTY50FUT" {...field} />
               </FormControl>
@@ -126,9 +124,7 @@ export const TickerRateForm: React.FC<ScriptRateFormProps> = ({
             name="segment"
             render={({ field }) => (
               <FormItem className="space-y-2">
-                <FormLabel className="text-sm font-medium text-gray-700">
-                  Segment
-                </FormLabel>
+                <FormLabel className="text-sm font-medium ">Segment</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   value={field.value}
@@ -154,9 +150,7 @@ export const TickerRateForm: React.FC<ScriptRateFormProps> = ({
             name="type"
             render={({ field }) => (
               <FormItem className="space-y-2">
-                <FormLabel className="text-sm font-medium text-gray-700">
-                  Type
-                </FormLabel>
+                <FormLabel className="text-sm font-medium ">Type</FormLabel>
                 <Select
                   onValueChange={field.onChange}
                   value={field.value}
@@ -184,7 +178,7 @@ export const TickerRateForm: React.FC<ScriptRateFormProps> = ({
             name="adminValue"
             render={({ field }) => (
               <FormItem className="space-y-2">
-                <FormLabel className="text-sm font-medium text-gray-700">
+                <FormLabel className="text-sm font-medium ">
                   Admin Value
                 </FormLabel>
                 <FormControl>
@@ -204,7 +198,7 @@ export const TickerRateForm: React.FC<ScriptRateFormProps> = ({
             name="masterValue"
             render={({ field }) => (
               <FormItem className="space-y-2">
-                <FormLabel className="text-sm font-medium text-gray-700">
+                <FormLabel className="text-sm font-medium ">
                   Master Value
                 </FormLabel>
                 <FormControl>
@@ -222,18 +216,10 @@ export const TickerRateForm: React.FC<ScriptRateFormProps> = ({
         </div>
 
         <div className="flex justify-end space-x-3 pt-3  ">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onCancel}
-            className="px-6"
-          >
+          <Button type="button" variant="outline" onClick={onCancel}>
             Cancel
           </Button>
-          <Button
-            type="submit"
-            className="px-6 bg-slate-800 hover:bg-slate-700"
-          >
+          <Button type="submit">
             {initialData ? "Update Rate" : "Submit Rate"}
           </Button>
         </div>
