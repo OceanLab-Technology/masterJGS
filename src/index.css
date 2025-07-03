@@ -133,3 +133,35 @@
 .script-rates-dialog > button.absolute.top-4.right-4 {
   display: none !important;
 }
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: none; /* Remove track background */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 10px;
+  border: none;
+}
+
+.custom-scrollbar::-webkit-scrollbar-button {
+  width: 0;
+  height: 0;
+  display: none;
+  background: transparent;
+  border: none;
+  content: "";
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--ring));
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin; /* Still applies thinner bar */
+  scrollbar-color: hsl(var(--border)) transparent;
+}

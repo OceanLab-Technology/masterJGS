@@ -3,14 +3,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -21,26 +13,18 @@ import {
 } from "@/components/ui/table";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { BrokerageForm } from "./BrokerageForm.tsx";
-import { Pencil, Trash2, Search, Crown } from "lucide-react";
-
-interface ClientBrokerage {
-  id: string;
-  clientId: string;
-  clientName: string;
-  segment?: string;
-  scriptName?: string;
-  adminValue: string;
-  masterValue: string;
-  brokerageType: "percentage" | "amount";
-  applicationType: "global" | "segment" | "script";
-}
+import { Building2, Crown, Pencil, Search, Trash2, X } from "lucide-react";
+import { ClientRateForm, type ClientBrokerage } from "./ClientRateForm";
+import { IconPlus } from "@tabler/icons-react";
+import { Separator } from "@/components/ui/separator";
 
 export default function ClientBrokerageSettings() {
   const [clientSettings, setClientSettings] = useState<ClientBrokerage[]>([
@@ -48,8 +32,8 @@ export default function ClientBrokerageSettings() {
       id: "1",
       clientId: "CL001",
       clientName: "John Doe",
-      adminValue: "0.30",
-      masterValue: "0.18",
+      adminValue: 0.3,
+      masterValue: 0.18,
       brokerageType: "percentage",
       applicationType: "global",
     },
@@ -58,8 +42,8 @@ export default function ClientBrokerageSettings() {
       clientId: "CL002",
       clientName: "Jane Smith",
       segment: "FUT",
-      adminValue: "20.00",
-      masterValue: "10.00",
+      adminValue: 20.0,
+      masterValue: 10.0,
       brokerageType: "amount",
       applicationType: "segment",
     },
@@ -68,30 +52,17 @@ export default function ClientBrokerageSettings() {
       clientId: "CL001",
       clientName: "John Doe",
       scriptName: "RELIANCE",
-      adminValue: "0.25",
-      masterValue: "0.15",
+      adminValue: 0.25,
+      masterValue: 0.15,
       brokerageType: "percentage",
       applicationType: "script",
     },
   ]);
-
+  const [searchTerm, setSearchTerm] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingClient, setEditingClient] = useState<ClientBrokerage | null>(
     null
   );
-  const [searchTerm, setSearchTerm] = useState("");
-  const [formData, setFormData] = useState({
-    clientId: "",
-    clientName: "",
-    segment: "",
-    scriptName: "",
-    adminValue: "",
-    masterValue: "",
-    brokerageType: "percentage",
-    applicationType: "global",
-  });
-
-  const segments = ["NSE", "FUT", "OPT", "MCX", "NCDEX"];
 
   const filteredSettings = clientSettings.filter(
     (s) =>
@@ -99,8 +70,7 @@ export default function ClientBrokerageSettings() {
       s.clientId.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const calculateTotal = (a: string, m: string) =>
-    (parseFloat(a) + parseFloat(m) || 0).toFixed(2);
+  const calculateTotal = (a: number, m: number) => (a + m || 0).toFixed(2);
 
   const getApplicationBadge = (s: ClientBrokerage) => {
     const base = "text-white text-xs";
@@ -126,49 +96,28 @@ export default function ClientBrokerageSettings() {
 
   const handleEdit = (s: ClientBrokerage) => {
     setEditingClient(s);
-    setFormData({
-      clientId: s.clientId,
-      clientName: s.clientName,
-      segment: s.segment || "",
-      scriptName: s.scriptName || "",
-      adminValue: s.adminValue,
-      masterValue: s.masterValue,
-      brokerageType: s.brokerageType,
-      applicationType: s.applicationType,
-    });
     setIsDialogOpen(true);
   };
 
-  const handleSave = () => {
-    const updatedData: ClientBrokerage = {
-      ...formData,
-      id: editingClient ? editingClient.id : Date.now().toString(),
-      brokerageType: formData.brokerageType as "percentage" | "amount",
-      applicationType: formData.applicationType as
-        | "global"
-        | "segment"
-        | "script",
-    };
-
-    setClientSettings(
-      (prev) =>
-        editingClient
-          ? prev.map((s) => (s.id === editingClient.id ? updatedData : s)) // update existing
-          : [...prev, updatedData] // add new
-    );
-
+  const handleSave = (formData: Omit<ClientBrokerage, "id">) => {
+    if (editingClient) {
+      const updatedData: ClientBrokerage = {
+        ...formData,
+        id: editingClient.id,
+      };
+      setClientSettings((prev) =>
+        prev.map((s) => (s.id === editingClient.id ? updatedData : s))
+      );
+    } else {
+      const newId = Date.now().toString();
+      const newData: ClientBrokerage = {
+        ...formData,
+        id: newId,
+      };
+      setClientSettings((prev) => [...prev, newData]);
+    }
     setIsDialogOpen(false);
     setEditingClient(null);
-    setFormData({
-      clientId: "",
-      clientName: "",
-      segment: "",
-      scriptName: "",
-      adminValue: "",
-      masterValue: "",
-      brokerageType: "percentage",
-      applicationType: "global",
-    });
   };
 
   const handleDelete = (id: string) =>
@@ -192,140 +141,51 @@ export default function ClientBrokerageSettings() {
             <Button
               onClick={() => {
                 setEditingClient(null);
-                setFormData({
-                  clientId: "",
-                  clientName: "",
-                  segment: "",
-                  scriptName: "",
-                  adminValue: "",
-                  masterValue: "",
-                  brokerageType: "percentage",
-                  applicationType: "global",
-                });
+                setIsDialogOpen(true);
               }}
-              className="bg-indigo-600 text-white"
+              className=""
             >
-              <Crown className="w-4 h-4 mr-2" />
+              <IconPlus className="w- h- " />
               Add Client Rate
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-4xl">
-            <DialogHeader>
-              <DialogTitle>
-                {editingClient
-                  ? "Edit Client Brokerage"
-                  : "Add Client Brokerage"}
-              </DialogTitle>
-            </DialogHeader>
 
-            <div className="space-y-6">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="client-id">Client ID</Label>
-                  <Input
-                    id="client-id"
-                    value={formData.clientId}
-                    onChange={(e) =>
-                      setFormData((p) => ({ ...p, clientId: e.target.value }))
-                    }
-                    placeholder="CL001"
-                  />
+          <DialogContent className="script-rates-dialog sm:max-w-xl p-0 rounded-lg shadow-xl">
+            <div>
+              <DialogHeader className="">
+                <div className="flex items-center justify-between space-x-4  p-6 md:p-6">
+                  <div className="flex items-start space-x-4">
+                    <div className="bg-muted p-3 rounded-lg flex-shrink-0 mt-1">
+                      <Building2 className="h-7 w-7 " />
+                    </div>
+                    <div>
+                      <DialogTitle className="text-lg font-semibold ">
+                        {editingClient ? "Edit" : "Add"} Script Rate
+                      </DialogTitle>
+                      <DialogDescription className="text-sm text-gray-500 mt-1">
+                        {editingClient
+                          ? "Update the details for the script rate."
+                          : "Fill the data for the new script rate."}
+                      </DialogDescription>
+                    </div>
+                  </div>
+                  <DialogClose asChild>
+                    <Button
+                      variant="ghost"
+                      className="h-9 w-9 p-0 rounded-full border  flex items-center justify-center hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-300 focus:ring-offset-2 self-center"
+                      aria-label="Close"
+                    >
+                      <X className="h-5 w-5 " />
+                    </Button>
+                  </DialogClose>
                 </div>
-                <div>
-                  <Label htmlFor="client-name">Client Name</Label>
-                  <Input
-                    id="client-name"
-                    value={formData.clientName}
-                    onChange={(e) =>
-                      setFormData((p) => ({ ...p, clientName: e.target.value }))
-                    }
-                    placeholder="John Doe"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <Label htmlFor="application-type">Application Type</Label>
-                <Select
-                  value={formData.applicationType}
-                  onValueChange={(v) =>
-                    setFormData((p) => ({ ...p, applicationType: v }))
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select application type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="global">
-                      Global (All segments & scripts)
-                    </SelectItem>
-                    <SelectItem value="segment">Specific Segment</SelectItem>
-                    <SelectItem value="script">Specific Script</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {formData.applicationType === "segment" && (
-                <div>
-                  <Label htmlFor="segment">Segment</Label>
-                  <Select
-                    value={formData.segment}
-                    onValueChange={(v) =>
-                      setFormData((p) => ({ ...p, segment: v }))
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select segment" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {segments.map((s) => (
-                        <SelectItem key={s} value={s}>
-                          {s}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-
-              {formData.applicationType === "script" && (
-                <div>
-                  <Label htmlFor="script-name">Script Name</Label>
-                  <Input
-                    id="script-name"
-                    value={formData.scriptName}
-                    onChange={(e) =>
-                      setFormData((p) => ({ ...p, scriptName: e.target.value }))
-                    }
-                    placeholder="RELIANCE"
-                  />
-                </div>
-              )}
-
-              <BrokerageForm
-                adminValue={formData.adminValue}
-                masterValue={formData.masterValue}
-                brokerageType={formData.brokerageType}
-                onMasterChange={(v) =>
-                  setFormData((p) => ({ ...p, masterValue: v }))
-                }
-                onTypeChange={(t) =>
-                  setFormData((p) => ({ ...p, brokerageType: t }))
-                }
-                adminReadonly={false}
-                onAdminChange={(v) =>
-                  setFormData((p) => ({ ...p, adminValue: v }))
-                }
+                <Separator className="mb-6" />
+              </DialogHeader>
+              <ClientRateForm
+                onSubmit={handleSave}
+                initialData={editingClient || undefined}
+                onCancel={() => setIsDialogOpen(false)}
               />
-            </div>
-
-            <div className="flex justify-end gap-2 mt-4">
-              <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-                Cancel
-              </Button>
-              <Button onClick={handleSave} className="bg-indigo-600 text-white">
-                {editingClient ? "Update" : "Add"} Client Rate
-              </Button>
             </div>
           </DialogContent>
         </Dialog>
@@ -346,7 +206,7 @@ export default function ClientBrokerageSettings() {
           </TableHeader>
           <TableBody>
             {filteredSettings.map((s) => (
-              <TableRow key={s.id} className="border-l-4 border-l-indigo-500">
+              <TableRow key={s.id} className="border-l-4 border-l-primary">
                 <TableCell className="font-medium">{s.clientId}</TableCell>
                 <TableCell>{s.clientName}</TableCell>
                 <TableCell>{getApplicationBadge(s)}</TableCell>
@@ -356,7 +216,7 @@ export default function ClientBrokerageSettings() {
                 <TableCell>
                   {s.masterValue} {s.brokerageType === "percentage" ? "%" : "₹"}
                 </TableCell>
-                <TableCell className="font-medium text-indigo-600">
+                <TableCell className="font-medium text-orange-500">
                   {calculateTotal(s.adminValue, s.masterValue)}{" "}
                   {s.brokerageType === "percentage" ? "%" : "₹"}
                 </TableCell>

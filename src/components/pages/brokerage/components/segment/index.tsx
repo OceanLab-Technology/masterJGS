@@ -97,26 +97,6 @@ export default function Segment() {
   return (
     <div className="flex flex-col h-full py-4">
       <div className="flex-1 overflow-y-auto custom-scrollbar">
-        <style jsx>{`
-          .custom-scrollbar::-webkit-scrollbar {
-            width: 6px;
-          }
-          .custom-scrollbar::-webkit-scrollbar-track {
-            background: transparent;
-          }
-          .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: hsl(var(--border));
-            border-radius: 3px;
-            transition: background 0.2s ease;
-          }
-          .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: hsl(var(--muted-foreground) / 0.4);
-          }
-          .custom-scrollbar {
-            scrollbar-width: thin;
-            scrollbar-color: hsl(var(--border)) transparent;
-          }
-        `}</style>
         {isLoading ? (
           <LoadingSkeleton />
         ) : segments.length > 0 ? (
