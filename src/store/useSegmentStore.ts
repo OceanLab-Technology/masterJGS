@@ -6,7 +6,6 @@ export interface Segment {
   title: string;
   admin_value: number;
   master_value: number;
-  percentage: boolean;
   is_blocked: boolean;
 }
 
@@ -34,52 +33,6 @@ export const useSegmentStore = create<SegmentState>((set, get) => ({
       set({ segments: res.data, loading: false });
     } catch (err) {
       console.error("API failed, using dummy data:", err);
-
-      // Fallback to dummy data when API fails
-      const dummySegments: Segment[] = [
-        {
-          id: 1,
-          title: "NSE",
-          admin_value: 0.4,
-          master_value: 0.25,
-          percentage: true,
-          is_blocked: false,
-        },
-        {
-          id: 2,
-          title: "BSE",
-          admin_value: 0.35,
-          master_value: 0.2,
-          percentage: true,
-          is_blocked: false,
-        },
-        {
-          id: 3,
-          title: "F&O",
-          admin_value: 20.0,
-          master_value: 15.0,
-          percentage: false,
-          is_blocked: false,
-        },
-        {
-          id: 4,
-          title: "MCX",
-          admin_value: 0.3,
-          master_value: 0.2,
-          percentage: true,
-          is_blocked: false,
-        },
-        {
-          id: 5,
-          title: "NCDEX",
-          admin_value: 0.35,
-          master_value: 0.25,
-          percentage: true,
-          is_blocked: false,
-        },
-      ];
-
-      set({ segments: dummySegments, loading: false, error: null });
     }
   },
 

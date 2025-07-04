@@ -18,25 +18,16 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 type SegmentBlocksProps = {
   id: number;
   title: string;
   admin_value: number;
   master_value: number;
-  percentage: boolean;
   is_blocked: boolean;
   onUpdateMasterValue: (val: number) => void;
 };
 
-// Define segment configurations
 const segmentConfig: Record<
   string,
   {
@@ -83,7 +74,6 @@ function SegmentBlocks({
   title,
   admin_value,
   master_value,
-  percentage,
   is_blocked,
   onUpdateMasterValue,
 }: SegmentBlocksProps) {
@@ -135,54 +125,46 @@ function SegmentBlocks({
       </CardHeader>
       <CardContent>
         <div className="space-y-4">
-          <div className="space-y-2">
-            <Label
-              htmlFor={`brokerage-type-${id}`}
-              className="text-sm font-medium"
-            >
-              Brokerage Type
-            </Label>
-            <Select defaultValue={percentage ? "Percentage (%)" : "Amount (₹)"}>
-              <SelectTrigger id={`brokerage-type-${id}`} className="w-full">
-                <SelectValue placeholder="Select type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Percentage (%)">Percentage (%)</SelectItem>
-                <SelectItem value="Amount (₹)">Amount (₹)</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
           <div className="grid grid-cols-3 gap-4">
             <div className="space-y-1.5">
               <Label htmlFor={`admin-value-${id}`} className="text-xs">
                 Admin Value
               </Label>
-              <Input
-                id={`admin-value-${id}`}
-                value={admin_value.toString()}
-                onChange={(e) => handleAdminValueChange(e.target.value)}
-                className="mt-1"
-                disabled
-              />
+              <div className="relative mt-1">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-muted-foreground">
+                  ₹
+                </span>
+                <Input
+                  id={`admin-value-${id}`}
+                  value={admin_value.toString()}
+                  onChange={(e) => handleAdminValueChange(e.target.value)}
+                  className="pl-7"
+                  disabled
+                />
+              </div>
             </div>
             <div className="space-y-1.5">
               <Label htmlFor={`master-value-${id}`} className="text-xs">
                 Master Value
               </Label>
-              <Input
-                id={`master-value-${id}`}
-                value={value.toString()}
-                onChange={(e) => handleMasterValueChange(e.target.value)}
-                onBlur={handleBlur}
-                disabled={is_blocked}
-                className="mt-1"
-              />
+              <div className="relative mt-1">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-muted-foreground">
+                  ₹
+                </span>
+                <Input
+                  id={`master-value-${id}`}
+                  value={value.toString()}
+                  onChange={(e) => handleMasterValueChange(e.target.value)}
+                  onBlur={handleBlur}
+                  disabled={is_blocked}
+                  className="pl-7"
+                />
+              </div>
             </div>
             <div className="space-y-1.5">
               <Label className="text-xs">Total Value</Label>
-              <div className=" flex h-9 py-1 w-full items-center justify-center rounded-md border bg-muted/50 px-3 text-sm">
-                <span className="font-medium">{calculateTotal()}</span>
+              <div className=" flex h-9 py-1 w-full items-center gap-2  rounded-md border bg-muted/50 px-3 text-sm">
+                <span className="font-medium">₹ {calculateTotal()}</span>
               </div>
             </div>
           </div>
