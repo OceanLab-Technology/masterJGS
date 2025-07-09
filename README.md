@@ -95,5 +95,3 @@ The `@repo/ui` package contains all shared UI components (buttons, tables, dialo
 4. Submit a pull request.
 
 ---
-
-Let me know if you want to add more details (e.g., about specific features, deployment, or contributing guidelines)!
