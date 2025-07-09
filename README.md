@@ -1,53 +1,99 @@
-# 🚀 Turborepo starter with shared shadcn/ui components (Vite, Next.js). Tailwind 4 support.
+# masterJGS
 
-[![Build](https://github.com/evgenius1424/turborepo-vite-shadcn-ui/actions/workflows/build.yml/badge.svg)](https://github.com/evgenius1424/turborepo-vite-shadcn-ui/actions/workflows/build.yml)
-[![Update Dependencies](https://github.com/evgenius1424/turborepo-vite-shadcn-ui/actions/workflows/update-dependencies.yml/badge.svg)](https://github.com/evgenius1424/turborepo-vite-shadcn-ui/actions/workflows/update-dependencies.yml)
+A modern, modular React + TypeScript application using Vite, TurboRepo, and a custom UI component library.
 
-This repository is a monorepo starter kit utilizing [Turborepo](https://turbo.build/repo) for managing multiple
-applications with shared [shadcn/ui](https://github.com/shadcn-ui/ui) components. It includes two applications (`vite`
-and `nextjs`) in the `apps`
-directory, both of which use shared components from the `@repo/ui` package.
+## Project Structure
 
-The goal of this repository is to provide up-to-date starters for vite-react and Next.js, and probably something else.
+```
+apps/
+  client/
+    src/
+      assets/         # Static assets (e.g., images, SVGs)
+      components/     # App-specific React components
+        layout/         # Layout components (e.g., DashboardLayout)
+        pages/          # Page-level components, organized by feature
+          dashboard/      # Dashboard page
+          brokerage/      # Brokerage management (with Segment, Ticker, Client subfeatures)
+          script/         # Script management (with Script, Client subfeatures)
+          common/         # Shared/common page components
+      store/           # Zustand stores for state management
+      App.tsx          # Main app component, sets up routing
+      main.tsx         # Entry point, renders the app
+      vite-env.d.ts    # Vite environment types
+packages/
+  ui/                # Shared UI component library (used across apps)
+    src/
+      components/      # Reusable UI components (Button, Table, Dialog, etc.)
+      styles/          # Shared global styles (Tailwind, animations)
+      hooks/           # Shared React hooks
+      icons/           # Shared icon components
+      lib/             # Utility functions
+  utils/             # Shared utility functions
+  types/             # Shared TypeScript types
+  typescript-config/ # Shared TypeScript config
+  eslint-config/     # Shared ESLint config
+  db/                # (If present) Database utilities/config
+```
 
-### Prerequisitesvite
+## Key Features
 
-Make sure you have the following installed:
+- **Monorepo** managed with TurboRepo for scalable development.
+- **Vite** for fast development and builds.
+- **React 19** with TypeScript for type-safe UI.
+- **Custom UI library** (`@repo/ui`) with reusable components and styles.
+- **Tailwind CSS** and `tw-animate-css` for utility-first styling and smooth animations.
+- **Zustand** for state management.
+- **Feature-based structure**: Each major feature (Dashboard, Brokerage, Script) is organized in its own directory with subcomponents.
 
-- [Node.js](https://nodejs.org/en/download/) (version 20 or higher)
-- [pnpm](https://pnpm.io/installation) (version 10 or higher)
+## Installation
 
-### Installation
+### Prerequisites
 
-1. Clone the repository:
+- **Node.js** v20 or higher
+- **pnpm** (recommended) or npm/yarn
 
-   ```bash
-   git clone https://github.com/evgenius1424/turborepo-vite-shadcn-ui.git
-   cd turborepo-vite-shadcn-ui
+### Setup
+
+1. **Clone the repository:**
+   ```sh
+   git clone https://github.com/OceanLab-Technology/masterJGS.git
+   cd masterJGS
    ```
 
-2. Install dependencies using `pnpm`:
-
-   ```bash
+2. **Install dependencies (monorepo root):**
+   ```sh
    pnpm install
    ```
 
-3. Build
-
-   ```bash
-   pnpm build
+3. **Run the development server:**
+   ```sh
+   pnpm dev
    ```
 
-4. Develop
+   This will start the Vite dev server for the client app.
 
-```bash
-   pnpm dev
-```
+### Useful Scripts
 
-5. Add new [component](https://ui.shadcn.com/docs/components/tabs) (replace card with button, tabs, you name it)
+- `pnpm build` – Build all packages and apps
+- `pnpm lint` – Lint all code
+- `pnpm format` – Format code with Prettier
 
-```bash
-pnpm ui card
-```
+## Usage
 
-Enjoy working with your new Turborepo starter kit and feel free to raise a PR! 🎉
+- Visit `http://localhost:5173` (or the port shown in your terminal) to view the app.
+- The main navigation and sidebar provide access to Dashboard, Brokerage Management, and Script Management features.
+
+## Custom UI Library
+
+The `@repo/ui` package contains all shared UI components (buttons, tables, dialogs, etc.), styles, and icons. You can import these into your app components for a consistent look and feel.
+
+## Contributing
+
+1. Fork the repo and create your branch.
+2. Make your changes.
+3. Run lint and tests.
+4. Submit a pull request.
+
+---
+
+Let me know if you want to add more details (e.g., about specific features, deployment, or contributing guidelines)!

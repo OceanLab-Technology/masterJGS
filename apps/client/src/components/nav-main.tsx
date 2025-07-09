@@ -1,5 +1,5 @@
 import { IconCirclePlusFilled, IconMail } from "@tabler/icons-react"
-import { type LucideIcon } from "lucide-react"
+import { type LucideIcon } from "@repo/ui/icons"
 
 import { Button } from "@repo/ui/components/button"
 import {

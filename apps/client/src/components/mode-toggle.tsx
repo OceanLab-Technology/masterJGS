@@ -1,4 +1,4 @@
-import { MoonIcon, SunIcon } from "@repo/ui/icons/index"
+import { MoonIcon, SunIcon } from "@repo/ui/icons"
 
 import { Button } from "@repo/ui/components/button"
 import {

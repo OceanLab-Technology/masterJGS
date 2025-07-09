@@ -19,7 +19,7 @@ interface SegmentState {
   updateSegmentLocally: (id: number, partial: Partial<Segment>) => void
 }
 
-export const useSegmentStore = create<SegmentState>((set, get) => ({
+export const useSegmentStore = create<SegmentState>((set) => ({
     segments: [],
     loading: false,
     error: null,

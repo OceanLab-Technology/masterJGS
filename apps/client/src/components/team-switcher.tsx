@@ -1,5 +1,5 @@
 import * as React from "react"
-import { ChevronsUpDownIcon, PlusIcon } from "@repo/ui/icons/index"
+import { ChevronsUpDownIcon, PlusIcon } from "@repo/ui/icons"
 
 import {
   DropdownMenu,
