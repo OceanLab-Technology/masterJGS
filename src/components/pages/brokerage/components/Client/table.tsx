@@ -21,7 +21,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Building2, Crown, Pencil, Search, Trash2, X } from "lucide-react";
+import { Building2, Pencil, Search, Trash2, X } from "lucide-react";
 import { ClientRateForm, type ClientBrokerage } from "./ClientRateForm";
 import { IconPlus } from "@tabler/icons-react";
 import { Separator } from "@/components/ui/separator";
@@ -64,7 +64,7 @@ export default function ClientBrokerageSettings() {
   const [editingClient, setEditingClient] = useState<ClientBrokerage | null>(
     null
   );
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
 
   const filteredSettings = clientSettings.filter(

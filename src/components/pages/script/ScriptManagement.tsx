@@ -1,5 +1,4 @@
 import DashboardLayout from "@/components/layout/DashboardLayout"
-// import Tabs from "../common/components/tabs"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import Script from "./components/Script/index";
 import Client from "./components/Client/index";

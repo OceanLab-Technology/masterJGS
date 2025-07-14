@@ -50,7 +50,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { TickerRateForm } from "./tickerrateform";
 import { type ScriptRate } from "./tickerrateform";
-import { Building2, X, FileText, Search } from "lucide-react";
+import { Building2, X } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -76,7 +76,7 @@ export default function EditableTable({ initialData }: EditableTableProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editRow, setEditRow] = useState<DataType | null>(null);
   const [globalFilter, setGlobalFilter] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading] = useState(false);
   const [isSearching, setIsSearching] = useState(false);
 
   const openAddModal = () => {
