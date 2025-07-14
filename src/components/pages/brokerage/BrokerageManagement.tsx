@@ -1,7 +1,7 @@
-import DashboardLayout from "@/components/layout/DashboardLayout"
+import DashboardLayout from "@/components/layout/DashboardLayout";
 // import Tabs from "../common/components/tabs"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import Segment from "./components/Segment/index"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Segment from "@/components/pages/brokerage/components/segment/index";
 import Ticker from "./components/Ticker/index";
 import Client from "./components/Client/index";
 
@@ -17,18 +17,23 @@ export default function BrokerageManagement() {
             <TabsTrigger value="Client">Client Wise</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="Segment" className="flex-1 min-h-0 overflow-hidden">
+          <TabsContent
+            value="Segment"
+            className="flex-1 min-h-0 overflow-hidden"
+          >
             <Segment />
           </TabsContent>
           <TabsContent value="Ticker" className="flex-1 min-h-0 overflow-auto">
             <Ticker />
           </TabsContent>
-          <TabsContent value="Client" className="flex-1 min-h-0 overflow-hidden">
+          <TabsContent
+            value="Client"
+            className="flex-1 min-h-0 overflow-hidden"
+          >
             <Client />
           </TabsContent>
         </Tabs>
       </div>
-
     </DashboardLayout>
   );
 }
