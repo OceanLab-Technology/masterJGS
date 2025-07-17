@@ -191,7 +191,7 @@ export default function UserDataTable() {
     getPaginationRowModel: getPaginationRowModel(),
     getSortedRowModel: getSortedRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
-    globalFilterFn: (row, columnId, filterValue) => {
+    globalFilterFn: (row, filterValue) => {
       const nickname = row.original.nickname.toLowerCase();
       return nickname.includes(filterValue.toLowerCase());
     },
