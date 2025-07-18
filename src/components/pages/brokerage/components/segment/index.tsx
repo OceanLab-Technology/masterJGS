@@ -1,36 +1,93 @@
+//   const EmptyState = () => (
+//     <div className="flex flex-col items-center justify-center py-16 h-full text-center">
+//       <div className="mx-auto mb-4 h-24 w-24 rounded-full bg-muted flex items-center justify-center">
+//         <div className="h-12 w-12 rounded-lg bg-muted-foreground/20" />
+//       </div>
+//       <h3 className="text-lg font-semibold">No segments found</h3>
+//       <p className="mt-2 text-sm text-muted-foreground">
+//         No segment data is available at the moment. <br />
+//         Please check your connection or try again later.
+//       </p>
+//     </div>
+//   );
+
+
+
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import SegmentBlocks from "@/components/pages/brokerage/components/segment/SegmentBlocks";
-import { useSegmentStore } from "@/store/useSegmentStore";
 import { Skeleton } from "@/components/ui/skeleton";
+import { create } from "zustand";
 
+// --- Store Setup ---
+interface Segment {
+  id: number;
+  title: string;
+  admin_value: number;
+  master_value: number;
+  is_blocked: boolean;
+}
+
+interface SegmentState {
+  segments: Segment[];
+  setSegments: (segments: Segment[]) => void;
+  updateSegmentLocally: (id: number, data: Partial<Segment>) => void;
+}
+
+const useSegmentStore = create<SegmentState>((set) => ({
+  segments: [],
+  setSegments: (segments) => set({ segments }),
+  updateSegmentLocally: (id, data) =>
+    set((state) => ({
+      segments: state.segments.map((s) =>
+        s.id === id ? { ...s, ...data } : s
+      ),
+    })),
+}));
+
+// --- Component ---
 export default function Segment() {
-  const { segments, fetchSegments, updateSegmentLocally, updateSegmentsBatch } =
-    useSegmentStore();
-  const [dirtySegments, setDirtySegments] = useState<Record<number, number>>(
-    {}
-  );
   const [isLoading, setIsLoading] = useState(true);
+  const [dirtySegments, setDirtySegments] = useState<Record<number, number>>({});
+  const segments = useSegmentStore((state) => state.segments);
+  const setSegments = useSegmentStore((state) => state.setSegments);
+  const updateSegmentLocally = useSegmentStore((state) => state.updateSegmentLocally);
 
   useEffect(() => {
-    const loadSegments = async () => {
+    const loadDummyData = async () => {
       setIsLoading(true);
-      try {
-        await fetchSegments();
-        console.log("Segments loaded:", segments);
-      } catch (error) {
-        console.error("Error fetching segments:", error);
-      } finally {
-        setIsLoading(false);
-      }
+      await new Promise((res) => setTimeout(res, 100)); // Simulate delay
+
+      const dummySegments: Segment[] = [
+        {
+          id: 1,
+          title: "Equity",
+          admin_value: 10,
+          master_value: 20,
+          is_blocked: false,
+        },
+        {
+          id: 2,
+          title: "Futures",
+          admin_value: 15,
+          master_value: 30,
+          is_blocked: false,
+        },
+        {
+          id: 3,
+          title: "Options",
+          admin_value: 5,
+          master_value: 25,
+          is_blocked: true,
+        },
+      ];
+
+      setSegments(dummySegments);
+      setIsLoading(false);
     };
 
-    loadSegments();
-  }, [fetchSegments]);
-
-  useEffect(() => {
-    console.log("Current segments state:", segments);
-  }, [segments]);
+    loadDummyData();
+  }, [setSegments]);
 
   const handleUpdateMasterValue = (id: number, value: number) => {
     updateSegmentLocally(id, { master_value: value });
@@ -38,11 +95,8 @@ export default function Segment() {
   };
 
   const handleSave = async () => {
-    const payload = Object.entries(dirtySegments).map(([id, master_value]) => ({
-      id: parseInt(id),
-      master_value,
-    }));
-    await updateSegmentsBatch(payload);
+    // Here we just simulate saving without API
+    console.log("Saving segments:", dirtySegments);
     setDirtySegments({});
   };
 
@@ -100,19 +154,17 @@ export default function Segment() {
         {isLoading ? (
           <LoadingSkeleton />
         ) : segments.length > 0 ? (
-          <>
-            <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 pb-20">
-              {segments.map((seg) => (
-                <SegmentBlocks
-                  key={seg.id}
-                  {...seg}
-                  onUpdateMasterValue={(val) =>
-                    handleUpdateMasterValue(seg.id, val)
-                  }
-                />
-              ))}
-            </div>
-          </>
+          <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 pb-20">
+            {segments.map((seg) => (
+              <SegmentBlocks
+                key={seg.id}
+                {...seg}
+                onUpdateMasterValue={(val) =>
+                  handleUpdateMasterValue(seg.id, val)
+                }
+              />
+            ))}
+          </div>
         ) : (
           <EmptyState />
         )}
