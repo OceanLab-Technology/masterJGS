@@ -1,7 +1,8 @@
-"use client"
+"use client";
 
-import { useState } from "react"
-import { z } from "zod"
+import { useState, useEffect } from "react";
+import { z } from "zod";
+import { Search } from "lucide-react";
 import {
   useReactTable,
   getCoreRowModel,
@@ -9,7 +10,7 @@ import {
   getSortedRowModel,
   getFilteredRowModel,
   flexRender,
-} from "@tanstack/react-table"
+} from "@tanstack/react-table";
 import {
   IconEdit,
   IconBan,
@@ -18,18 +19,18 @@ import {
   IconChevronLeft,
   IconChevronRight,
   IconChevronsRight,
-} from "@tabler/icons-react"
+} from "@tabler/icons-react";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogFooter,
-} from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Checkbox } from "@/components/ui/checkbox";
 import {
   Table,
   TableBody,
@@ -37,8 +38,8 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
+} from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
 
 export const schema = z.object({
   id: z.number(),
@@ -46,43 +47,84 @@ export const schema = z.object({
   name: z.string(),
   segment: z.string(),
   maxQty: z.number(),
-  masterStatus: z.string()
+  masterStatus: z
+    .string()
     .transform((val) => val.toLowerCase())
-    .refine((val): val is "active" | "blocked" => val === "active" || val === "blocked")
+    .refine(
+      (val): val is "active" | "blocked" =>
+        val === "active" || val === "blocked"
+    )
     .transform((val) => (val === "active" ? "Active" : "Blocked")),
-
-})
+});
 
 interface EditableScriptTableProps {
-  initialData: DataType[]
-  availableSegments: { name: string; enabled: boolean }[]
-  clientId: string
+  initialData: DataType[];
+  availableSegments: { name: string; enabled: boolean }[];
+  clientData: Array<{ clientId: string; clientName: string }>;
+  clientScriptsData: Record<string, DataType[]>;
 }
 
-type DataType = z.infer<typeof schema>
-
+type DataType = z.infer<typeof schema>;
 
 export default function EditableScriptTable({
   initialData,
   availableSegments,
-  clientId,
+  clientData,
+  clientScriptsData,
 }: EditableScriptTableProps) {
-  const [data, setData] = useState(initialData)
-  const [rowSelection, setRowSelection] = useState({})
-  const [globalFilter, setGlobalFilter] = useState("")
-  const [editRow, setEditRow] = useState<z.infer<typeof schema> | null>(null)
-  const [form, setForm] = useState<{ maxQty: number }>({ maxQty: 0 })
-  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [selectedClient, setSelectedClient] = useState(clientData[0]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [isSearching, setIsSearching] = useState(false);
+  const [data, setData] = useState(initialData);
+  const [rowSelection, setRowSelection] = useState({});
+  const [globalFilter, setGlobalFilter] = useState("");
+  const [editRow, setEditRow] = useState<z.infer<typeof schema> | null>(null);
+  const [form, setForm] = useState<{ maxQty: number }>({ maxQty: 0 });
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [segmentStates, setSegmentStates] = useState<Record<string, boolean>>(
-    Object.fromEntries(availableSegments.map(s => [s.name, s.enabled]))
-  )
+    Object.fromEntries(availableSegments.map((s) => [s.name, s.enabled]))
+  );
 
+  const currentScripts = clientScriptsData[selectedClient.clientId] || [];
+
+  useEffect(() => {
+    setData(currentScripts);
+  }, [selectedClient, currentScripts]);
+
+  const filteredClients = clientData.filter(
+    (client) =>
+      client.clientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      client.clientId.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+    if (value) {
+      setIsSearching(true);
+      setTimeout(() => {
+        setIsSearching(false);
+      }, 300);
+    } else {
+      setIsSearching(false);
+    }
+  };
+
+  const handleClientSelect = (client: {
+    clientId: string;
+    clientName: string;
+  }) => {
+    setSelectedClient(client);
+    setSearchTerm("");
+    setData(clientScriptsData[client.clientId] || []);
+  };
+
+  console.log("InitialData:", initialData, data);
 
   const openEditModal = (row: DataType) => {
-    setEditRow(row)
-    setForm({ ...row })
-    setIsModalOpen(true)
-  }
+    setEditRow(row);
+    setForm({ ...row });
+    setIsModalOpen(true);
+  };
 
   const table = useReactTable({
     data,
@@ -91,15 +133,20 @@ export default function EditableScriptTable({
         id: "select",
         header: ({ table }) => (
           <Checkbox
-            checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
-            onCheckedChange={value => table.toggleAllPageRowsSelected(!!value)}
+            checked={
+              table.getIsAllPageRowsSelected() ||
+              (table.getIsSomePageRowsSelected() && "indeterminate")
+            }
+            onCheckedChange={(value) =>
+              table.toggleAllPageRowsSelected(!!value)
+            }
             aria-label="Select all"
           />
         ),
         cell: ({ row }) => (
           <Checkbox
             checked={row.getIsSelected()}
-            onCheckedChange={value => row.toggleSelected(!!value)}
+            onCheckedChange={(value) => row.toggleSelected(!!value)}
             aria-label="Select row"
           />
         ),
@@ -140,8 +187,8 @@ export default function EditableScriptTable({
                   variant="outline"
                   size="sm"
                   onClick={() =>
-                    setData(prev =>
-                      prev.map(r =>
+                    setData((prev) =>
+                      prev.map((r) =>
                         r.id === id ? { ...r, masterStatus: "Active" } : r
                       )
                     )
@@ -154,8 +201,8 @@ export default function EditableScriptTable({
                   variant="outline"
                   size="sm"
                   onClick={() =>
-                    setData(prev =>
-                      prev.map(r =>
+                    setData((prev) =>
+                      prev.map((r) =>
                         r.id === id ? { ...r, masterStatus: "Blocked" } : r
                       )
                     )
@@ -170,17 +217,17 @@ export default function EditableScriptTable({
                 variant="outline"
                 size="sm"
                 onClick={() =>
-                  setData(prev =>
-                    prev.map(r =>
+                  setData((prev) =>
+                    prev.map((r) =>
                       r.id === id
                         ? {
-                          ...r,
-                          minLot: 0,
-                          maxLot: 0,
-                          maxQty: 0,
-                          qtyPerLot: 0,
-                          masterStatus: "Active",
-                        }
+                            ...r,
+                            minLot: 0,
+                            maxLot: 0,
+                            maxQty: 0,
+                            qtyPerLot: 0,
+                            masterStatus: "Active",
+                          }
                         : r
                     )
                   )
@@ -191,7 +238,7 @@ export default function EditableScriptTable({
             </div>
           );
         },
-      }
+      },
     ],
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -202,33 +249,88 @@ export default function EditableScriptTable({
     onGlobalFilterChange: setGlobalFilter,
     enableRowSelection: true,
     globalFilterFn: (row, filter) => {
-      const search = filter.toLowerCase()
-      return row.original.name.toLowerCase().includes(search) || row.original.tickerId.toLowerCase().includes(search)
+      const search = filter.toLowerCase();
+      return (
+        row.original.name.toLowerCase().includes(search) ||
+        row.original.tickerId.toLowerCase().includes(search)
+      );
     },
-  })
-
+  });
 
   const handleBulkAction = (status: "Active" | "Blocked") => {
-    const ids = table.getSelectedRowModel().rows.map(r => r.original.id)
-    setData(prev => prev.map(r => ids.includes(r.id) ? { ...r, masterStatus: status } : r))
-    setRowSelection({})
-  }
+    const ids = table.getSelectedRowModel().rows.map((r) => r.original.id);
+    setData((prev) =>
+      prev.map((r) => (ids.includes(r.id) ? { ...r, masterStatus: status } : r))
+    );
+    setRowSelection({});
+  };
 
   const toggleSegment = (name: string) => {
     if (name === "ALL") {
-      const allEnabled = Object.values(segmentStates).every(Boolean)
+      const allEnabled = Object.values(segmentStates).every(Boolean);
       const newStates = Object.fromEntries(
-        Object.keys(segmentStates).map(key => [key, !allEnabled])
-      )
-      setSegmentStates(newStates)
+        Object.keys(segmentStates).map((key) => [key, !allEnabled])
+      );
+      setSegmentStates(newStates);
     } else {
-      setSegmentStates(prev => ({ ...prev, [name]: !prev[name] }))
+      setSegmentStates((prev) => ({ ...prev, [name]: !prev[name] }));
     }
-  }
-
+  };
 
   return (
-    <div className="p-4 space-y-4">
+    <div className="space-y-4">
+      <div className="relative space-y-2">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
+          <Input
+            placeholder="Search clients by name or ID..."
+            value={searchTerm}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+
+        {searchTerm && (
+          <div className="border rounded-lg max-h-48 overflow-y-auto">
+            {isSearching ? (
+              <div className="p-4 text-center text-muted-foreground">
+                Searching...
+              </div>
+            ) : filteredClients.length > 0 ? (
+              <div className="space-y-1">
+                {filteredClients.map((client) => (
+                  <Button
+                    key={client.clientId}
+                    variant="ghost"
+                    className="w-full justify-start text-left h-auto p-3"
+                    onClick={() => handleClientSelect(client)}
+                  >
+                    <div>
+                      <div className="font-medium">{client.clientName}</div>
+                      <div className="text-sm text-muted-foreground">
+                        {client.clientId}
+                      </div>
+                    </div>
+                  </Button>
+                ))}
+              </div>
+            ) : (
+              <div className="p-4 text-center text-muted-foreground">
+                No clients found
+              </div>
+            )}
+          </div>
+        )}
+
+        <div className="flex items-center gap-2 p-3 bg-secondary rounded-lg">
+          <div className="text-sm text-muted-foreground">Selected Client:</div>
+          <div className="font-medium">{selectedClient.clientName}</div>
+          <div className="text-sm text-muted-foreground">
+            ({selectedClient.clientId})
+          </div>
+        </div>
+      </div>
+
       {/* <div className="flex gap-4 flex-wrap">
         {[...availableSegments, { name: "ALL", enabled: true }].map(({ name, enabled }) => (
           <div key={name} className="flex items-center gap-2">
@@ -258,7 +360,7 @@ export default function EditableScriptTable({
           ))}
         </div>
       </div> */}
-      <div className="rounded-2xl border border-muted bg-muted/50 p-6 shadow-md">
+      {/* <div className="rounded-2xl border border-muted bg-muted/50 p-6 shadow-md">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <h2 className="text-lg font-semibold text-muted-foreground tracking-wide">
             Client Details
@@ -268,67 +370,101 @@ export default function EditableScriptTable({
             <span className="text-base font-semibold text-foreground">{clientId}</span>
           </div>
         </div>
-      </div>
-
-
+      </div> */}
 
       <div className="rounded-md border p-4 bg-muted/50 space-y-2">
-        <h3 className="text-sm font-medium text-muted-foreground">Client Segment Controls</h3>
+        <h3 className="text-sm font-medium text-muted-foreground">
+          Client Segment Controls
+        </h3>
         <div className="flex flex-wrap gap-4">
-          {[...availableSegments, { name: "ALL", enabled: true }].map(({ name, enabled }) => {
-            const isAll = name === "ALL";
-            const isChecked = isAll
-              ? Object.entries(segmentStates)
-                .filter(([seg]) => availableSegments.find(s => s.name === seg)?.enabled)
-                .every(([, v]) => v)
-              : !!segmentStates[name];
+          {[...availableSegments, { name: "ALL", enabled: true }].map(
+            ({ name, enabled }) => {
+              const isAll = name === "ALL";
+              const isChecked = isAll
+                ? Object.entries(segmentStates)
+                    .filter(
+                      ([seg]) =>
+                        availableSegments.find((s) => s.name === seg)?.enabled
+                    )
+                    .every(([, v]) => v)
+                : !!segmentStates[name];
 
-            return (
-              <div key={name} className="flex items-center gap-2">
-                <Checkbox
-                  disabled={!enabled}
-                  checked={isChecked}
-                  onCheckedChange={() => toggleSegment(name)}
-                />
-                <Label
-                  className={`text-sm flex items-center gap-1 ${!enabled && !isAll ? "text-muted-foreground line-through" : ""
+              return (
+                <div key={name} className="flex items-center gap-2">
+                  <Checkbox
+                    disabled={!enabled}
+                    checked={isChecked}
+                    onCheckedChange={() => toggleSegment(name)}
+                  />
+                  <Label
+                    className={`text-sm flex items-center gap-1 ${
+                      !enabled && !isAll
+                        ? "text-muted-foreground line-through"
+                        : ""
                     }`}
-                >
-                  {name}
-                  {!enabled && !isAll && (
-                    <span className="text-xs bg-red-500 text-white px-1 rounded">Blocked</span>
-                  )}
-                </Label>
-              </div>
-            );
-          })}
+                  >
+                    {name}
+                    {!enabled && !isAll && (
+                      <span className="text-xs bg-red-500 text-white px-1 rounded">
+                        Blocked
+                      </span>
+                    )}
+                  </Label>
+                </div>
+              );
+            }
+          )}
         </div>
       </div>
 
       <div className="flex justify-between items-center">
-        <Input placeholder="Search by Ticker or Name" className="w-64" value={globalFilter} onChange={e => setGlobalFilter(e.target.value)} />
+        <Input
+          placeholder="Search by Ticker or Name"
+          className="w-64"
+          value={globalFilter}
+          onChange={(e) => setGlobalFilter(e.target.value)}
+        />
         <div className="flex gap-2">
-          <Button variant="destructive" disabled={!table.getSelectedRowModel().rows.length} onClick={() => handleBulkAction("Blocked")}>Block Selected</Button>
-          <Button variant="default" disabled={!table.getSelectedRowModel().rows.length} onClick={() => handleBulkAction("Active")}>Unblock Selected</Button>
+          <Button
+            variant="destructive"
+            disabled={!table.getSelectedRowModel().rows.length}
+            onClick={() => handleBulkAction("Blocked")}
+          >
+            Block Selected
+          </Button>
+          <Button
+            variant="default"
+            disabled={!table.getSelectedRowModel().rows.length}
+            onClick={() => handleBulkAction("Active")}
+          >
+            Unblock Selected
+          </Button>
         </div>
       </div>
 
       <div className="border rounded-md overflow-auto">
         <Table>
           <TableHeader>
-            {table.getHeaderGroups().map(group => (
+            {table.getHeaderGroups().map((group) => (
               <TableRow key={group.id}>
-                {group.headers.map(header => (
-                  <TableHead key={header.id}>{flexRender(header.column.columnDef.header, header.getContext())}</TableHead>
+                {group.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {flexRender(
+                      header.column.columnDef.header,
+                      header.getContext()
+                    )}
+                  </TableHead>
                 ))}
               </TableRow>
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows.map(row => (
+            {table.getRowModel().rows.map((row) => (
               <TableRow key={row.id}>
-                {row.getVisibleCells().map(cell => (
-                  <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
+                {row.getVisibleCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </TableCell>
                 ))}
               </TableRow>
             ))}
@@ -337,13 +473,47 @@ export default function EditableScriptTable({
       </div>
 
       <div className="flex items-center justify-between text-sm">
-        <div className="text-muted-foreground">{table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} selected</div>
+        <div className="text-muted-foreground">
+          {table.getFilteredSelectedRowModel().rows.length} of{" "}
+          {table.getFilteredRowModel().rows.length} selected
+        </div>
         <div className="flex gap-2 items-center">
-          <Button variant="outline" size="icon" onClick={() => table.setPageIndex(0)} disabled={!table.getCanPreviousPage()}><IconChevronsLeft size={16} /></Button>
-          <Button variant="outline" size="icon" onClick={() => table.previousPage()} disabled={!table.getCanPreviousPage()}><IconChevronLeft size={16} /></Button>
-          <div>Page {table.getState().pagination.pageIndex + 1} of {table.getPageCount()}</div>
-          <Button variant="outline" size="icon" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}><IconChevronRight size={16} /></Button>
-          <Button variant="outline" size="icon" onClick={() => table.setPageIndex(table.getPageCount() - 1)} disabled={!table.getCanNextPage()}><IconChevronsRight size={16} /></Button>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => table.setPageIndex(0)}
+            disabled={!table.getCanPreviousPage()}
+          >
+            <IconChevronsLeft size={16} />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+          >
+            <IconChevronLeft size={16} />
+          </Button>
+          <div>
+            Page {table.getState().pagination.pageIndex + 1} of{" "}
+            {table.getPageCount()}
+          </div>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+          >
+            <IconChevronRight size={16} />
+          </Button>
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+            disabled={!table.getCanNextPage()}
+          >
+            <IconChevronsRight size={16} />
+          </Button>
         </div>
       </div>
 
@@ -361,38 +531,52 @@ export default function EditableScriptTable({
             />
           </div>
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsModalOpen(false)}>Cancel</Button>
-            <Button onClick={() => {
-              if (editRow) {
-                setData(prev => prev.map(r => r.id === editRow.id ? { ...r, maxQty: form.maxQty } : r))
-              }
-              setIsModalOpen(false)
-            }}>Update</Button>
+            <Button variant="outline" onClick={() => setIsModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                if (editRow) {
+                  setData((prev) =>
+                    prev.map((r) =>
+                      r.id === editRow.id ? { ...r, maxQty: form.maxQty } : r
+                    )
+                  );
+                }
+                setIsModalOpen(false);
+              }}
+            >
+              Update
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }
 
 function getApplicationBadge(segment: string): any {
-  const base = "text-white text-xs"
+  const base = "text-white text-xs";
   switch (segment) {
     case "BSE":
-      return <Badge className={`bg-red-600 ${base}`}>{segment}</Badge>
+      return <Badge className={`bg-red-600 ${base}`}>{segment}</Badge>;
     case "NSE":
-      return <Badge className={`bg-orange-600 ${base}`}>{segment}</Badge>
+      return <Badge className={`bg-orange-600 ${base}`}>{segment}</Badge>;
     case "MCX":
-      return <Badge className={`bg-green-600 ${base}`}>{segment}</Badge>
+      return <Badge className={`bg-green-600 ${base}`}>{segment}</Badge>;
     default:
-      return <Badge className={`bg-gray-500 ${base}`}>{segment}</Badge>
+      return <Badge className={`bg-gray-500 ${base}`}>{segment}</Badge>;
   }
 }
 
 const getStatusBadge = (status: "Active" | "Blocked") => {
   return (
-    <Badge className={`text-white text-xs ${status === "Active" ? "bg-green-600" : "bg-red-600"}`}>
+    <Badge
+      className={`text-white text-xs ${
+        status === "Active" ? "bg-green-600" : "bg-red-600"
+      }`}
+    >
       {status}
     </Badge>
-  )
-}
+  );
+};
