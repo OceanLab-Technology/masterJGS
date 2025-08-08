@@ -59,7 +59,7 @@ const schema = z.object({
   scriptName: z.string(),
   symbol: z.string(),
   segment: z.enum(["BSE", "NSE", "MCX"]),
-  type: z.enum(["percentage", "rupee"]),
+  type: z.enum(["%", "₹"]),
   adminValue: z.number(),
   masterValue: z.number(),
 });
@@ -268,7 +268,7 @@ export default function EditableTable({ initialData }: EditableTableProps) {
       header: "Admin Value",
       cell: ({ row }) => {
         const { adminValue, type } = row.original;
-        return `${adminValue.toFixed(2)} ${type === "percentage" ? "%" : "₹"}`;
+        return `${adminValue.toFixed(2)} ${type}`;
       },
     },
     {
@@ -276,7 +276,7 @@ export default function EditableTable({ initialData }: EditableTableProps) {
       header: "Master Value",
       cell: ({ row }) => {
         const { masterValue, type } = row.original;
-        return `${masterValue.toFixed(2)} ${type === "percentage" ? "%" : "₹"}`;
+        return `${masterValue.toFixed(2)} ${type}`;
       },
     },
     {
@@ -285,7 +285,7 @@ export default function EditableTable({ initialData }: EditableTableProps) {
       cell: ({ row }) => {
         const { adminValue, masterValue, type } = row.original;
         const total = adminValue + masterValue;
-        return `${total.toFixed(2)} ${type === "percentage" ? "%" : "₹"}`;
+        return `${total.toFixed(2)} ${type}`;
       },
     },
 
@@ -530,7 +530,7 @@ export default function EditableTable({ initialData }: EditableTableProps) {
                       id: editRow.id.toString(),
                       scriptName: editRow.scriptName,
                       symbol: editRow.symbol,
-                      segment: editRow.segment,
+                      segment: editRow.segment as "BSE" | "NSE" | "MCX",
                       type: editRow.type,
                       adminValue: editRow.adminValue,
                       masterValue: editRow.masterValue,

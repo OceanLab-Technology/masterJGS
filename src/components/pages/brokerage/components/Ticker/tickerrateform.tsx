@@ -25,7 +25,7 @@ const formSchema = z.object({
   scriptName: z.string().min(1, "Script name is required"),
   symbol: z.string().min(1, "Symbol is required"),
   segment: z.enum(["BSE", "NSE", "MCX"]),
-  type: z.enum(["percentage", "rupee"]),
+  type: z.enum(["%", "₹"]),
   adminValue: z.coerce.number().min(0, "Admin value must be non-negative"),
   masterValue: z.coerce.number().min(0, "Master value must be non-negative"),
 });
@@ -35,7 +35,7 @@ export type ScriptRate = {
   scriptName: string;
   symbol: string;
   segment: "BSE" | "NSE" | "MCX";
-  type: "percentage" | "rupee";
+  type: "%" | "₹";
   adminValue: number;
   masterValue: number;
   total: number;
@@ -60,14 +60,13 @@ export const TickerRateForm: React.FC<ScriptRateFormProps> = ({
       scriptName: initialData?.scriptName || "",
       symbol: initialData?.symbol || "",
       segment:
-        initialData?.segment &&
-        ["BSE", "NSE", "MCX"].includes(initialData.segment)
+        initialData?.segment && ["BSE", "NSE", "MCX"].includes(initialData.segment)
           ? initialData.segment
           : "NSE",
       type:
-        initialData?.type && ["percentage", "rupee"].includes(initialData.type)
+        initialData?.type && ["%", "₹"].includes(initialData.type)
           ? initialData.type
-          : "percentage",
+          : "%",
       adminValue: initialData?.adminValue || 0,
       masterValue: initialData?.masterValue || 0,
     },
@@ -153,7 +152,7 @@ export const TickerRateForm: React.FC<ScriptRateFormProps> = ({
                 <Select
                   onValueChange={field.onChange}
                   value={field.value}
-                  defaultValue="percentage"
+                  defaultValue="%"
                 >
                   <FormControl>
                     <SelectTrigger className="w-full">
@@ -161,8 +160,8 @@ export const TickerRateForm: React.FC<ScriptRateFormProps> = ({
                     </SelectTrigger>
                   </FormControl>
                   <SelectContent>
-                    <SelectItem value="percentage">Percentage %</SelectItem>
-                    <SelectItem value="rupee">Rupee ₹</SelectItem>
+                    <SelectItem value="%">Percentage %</SelectItem>
+                    <SelectItem value="₹">Rupee ₹</SelectItem>
                   </SelectContent>
                 </Select>
                 <FormMessage className="text-xs" />
